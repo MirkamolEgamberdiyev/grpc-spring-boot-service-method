@@ -11,11 +11,15 @@
 
     <artifactId>example-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
+    <properties>
+        <java.version>11</java.version>
+    </properties>
     <dependencies>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
         </dependency>
         <!--文档相关-->
         <dependency>

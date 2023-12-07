@@ -20,15 +20,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/20
+ * @date 2023/12/07
  */
 @Slf4j
 @Service
 public class ClientSideStreamServiceImpl implements ClientSideStreamService {
 
-    // 客户端流式传输使用非阻塞服务
+    /**
+     * Client streaming uses non-blocking services
+     */
     @GrpcClient("server-service")
     private ClientSideStreamServiceGrpc.ClientSideStreamServiceStub serviceStub;
 
@@ -39,8 +41,7 @@ public class ClientSideStreamServiceImpl implements ClientSideStreamService {
     protected String serverDomain;
 
     /**
-     * 客户端流式传输 - 字符串
-     * @return
+     * Client Streaming - String
      */
     @SneakyThrows
     @Override
@@ -67,10 +68,12 @@ public class ClientSideStreamServiceImpl implements ClientSideStreamService {
             }
         });
 
-        // 分批次向服务端发送数据
+        /**
+         * Send data to the server in batches
+         */
         for (int i = 0; i < 10; i++) {
             StringRequest.Builder builder = StringRequest.newBuilder();
-            builder.setValue("客户端流式传输 - 字符串 第" + i + "次发送数据" + System.lineSeparator());
+            builder.setValue("Client Streaming - String No." + i + " Send data" + System.lineSeparator());
             observer.onNext(builder.build());
         }
         observer.onCompleted();
@@ -80,15 +83,14 @@ public class ClientSideStreamServiceImpl implements ClientSideStreamService {
     }
 
     /**
-     * 客户端流式传输 - bytes
-     * @param file
-     * @return
+     * client streaming - bytes
+     *
      */
     @SneakyThrows
     @Override
     public String clientStreamBytes(MultipartFile file) {
         if (ObjectUtil.isEmpty(file)) {
-            return "请上传文件";
+            return "Please upload files";
         }
         CountDownLatch countDownLatch = new CountDownLatch(1);
         BytesRequest.Builder builder = BytesRequest.newBuilder();
@@ -116,10 +118,11 @@ public class ClientSideStreamServiceImpl implements ClientSideStreamService {
         });
 
         byte[] data = file.getBytes();
-        // 把上传的文件分段，每段512K
+        /**
+         * Split uploaded files into segments
+         */
         int buffLength = 512 * 1024;
         byte[][] splitData = ArrayUtil.split(data, buffLength);
-        // 分批次向服务器发送数据，每次发送512K
         for (byte[] splitDatum : splitData) {
             observer.onNext(builder.setData(ByteString.copyFrom(splitDatum)).build());
         }
@@ -131,15 +134,14 @@ public class ClientSideStreamServiceImpl implements ClientSideStreamService {
     }
 
     /**
-     * 客户端流式传输 - bytes 服务端通过byte数组接收
-     * @param file
-     * @return
+     * client streaming - bytes The server receives through byte array
+     *
      */
     @SneakyThrows
     @Override
     public String clientStreamBytesByte(MultipartFile file) {
         if (ObjectUtil.isEmpty(file)) {
-            return "请上传文件";
+            return "Please upload files";
         }
         CountDownLatch countDownLatch = new CountDownLatch(1);
         BytesRequest.Builder builder = BytesRequest.newBuilder();
@@ -167,10 +169,15 @@ public class ClientSideStreamServiceImpl implements ClientSideStreamService {
         });
 
         byte[] data = file.getBytes();
-        // 把上传的文件分段，每段512K
+        /**
+         * Split uploaded files into segments
+         */
         int buffLength = 512 * 1024;
         byte[][] splitData = ArrayUtil.split(data, buffLength);
-        // 分批次向服务器发送数据，每次发送512K
+
+        /**
+         * Send data to server in batches
+         */
         for (byte[] splitDatum : splitData) {
             observer.onNext(builder.setData(ByteString.copyFrom(splitDatum)).build());
         }

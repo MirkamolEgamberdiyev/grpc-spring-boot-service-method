@@ -15,12 +15,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/20
+ * @date 2023/12/07
  */
 @Slf4j
 @GrpcService
@@ -34,20 +37,20 @@ public class ClientSideStreamGrpcService extends ClientSideStreamServiceGrpc.Cli
     }
 
     /**
-     * 客户端流式传输 - 字符串
+     * Client Streaming - String
+     *
      * @param responseObserver
-     * @return
      */
     @Override
     public StreamObserver<StringRequest> clientStreamString(StreamObserver<StringResponse> responseObserver) {
-        // 使用StringBuilder接收多次从客户端传来的数据
+        // Use StringBuilder to receive data from the client multiple times
         StringBuilder stringBuilder = new StringBuilder();
 
         return new StreamObserver<StringRequest>() {
             @Override
             public void onNext(StringRequest request) {
                 log.info("clientStreamString onNext request={}", request.getValue());
-                // 拼接客户端分批次传输的数据
+                // Splicing data transmitted in batches by the client
                 stringBuilder.append(request.getValue());
             }
 
@@ -59,7 +62,7 @@ public class ClientSideStreamGrpcService extends ClientSideStreamServiceGrpc.Cli
             @Override
             public void onCompleted() {
                 String requestString = stringBuilder.toString();
-                StringResponse result = StringResponse.newBuilder().setValue("clientStreamString请求参数: " + requestString).build();
+                StringResponse result = StringResponse.newBuilder().setValue("clientStreamString request parameters: " + requestString).build();
                 responseObserver.onNext(result);
                 responseObserver.onCompleted();
             }
@@ -67,15 +70,15 @@ public class ClientSideStreamGrpcService extends ClientSideStreamServiceGrpc.Cli
     }
 
     /**
-     * 客户端流式传输 - bytes 返回上传文件的保存路径
+     * Client streaming - bytes returns the save path of the uploaded file
+     *
      * @param responseObserver
-     * @return
      */
     @SneakyThrows
     @Override
     public StreamObserver<BytesRequest> clientStreamBytes(StreamObserver<StringResponse> responseObserver) {
         File uploadFile = new File(uploadFilePath + System.currentTimeMillis());
-        // 使用BufferedOutputStream流接收多次从客户端传来的数据
+        // Use the BufferedOutputStream stream to receive data from the client multiple times
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(uploadFile));
         StringBuilder fileName = new StringBuilder();
 
@@ -85,7 +88,7 @@ public class ClientSideStreamGrpcService extends ClientSideStreamServiceGrpc.Cli
             @Override
             public void onNext(BytesRequest bytesRequest) {
                 log.info("clientStreamBytes onNext.");
-                // 拼接客户端分批次传输的数据
+                // Splicing data transmitted in batches by the client
                 bufferedOutputStream.write(bytesRequest.getData().toByteArray());
                 if (StringUtils.isEmpty(fileName.toString())) {
                     fileName.append(bytesRequest.getFileName());
@@ -101,11 +104,11 @@ public class ClientSideStreamGrpcService extends ClientSideStreamServiceGrpc.Cli
             @Override
             public void onCompleted() {
                 log.info("clientStreamBytes onCompleted.");
-                // 把流中保存的数据flush到文件中
+                // Flush the data saved in the stream to the file
                 bufferedOutputStream.flush();
                 bufferedOutputStream.close();
 
-                // 重命名文件，保留源文件的扩展名
+                // Rename the file, retaining the extension of the source file
                 File file = FileUtil.rename(uploadFile, System.currentTimeMillis() + fileName.toString(), true, true);
 
                 StringResponse.Builder resultBuilder = StringResponse.newBuilder();
@@ -117,9 +120,9 @@ public class ClientSideStreamGrpcService extends ClientSideStreamServiceGrpc.Cli
     }
 
     /**
-     * 客户端流式传输 - bytes 服务端通过byte数组接收
+     * Client streaming - bytes server receives through byte array
+     *
      * @param responseObserver
-     * @return
      */
     @Override
     public StreamObserver<BytesRequest> clientStreamBytesByte(StreamObserver<StringResponse> responseObserver) {
@@ -130,7 +133,7 @@ public class ClientSideStreamGrpcService extends ClientSideStreamServiceGrpc.Cli
             @Override
             public void onNext(BytesRequest bytesRequest) {
                 log.info("clientStreamBytesByte onNext.");
-                // 拼接从客户端多次传来的数据
+                // Splicing data transmitted multiple times from the client
                 buff[0] = ArrayUtil.addAll(buff[0], bytesRequest.getData().toByteArray());
                 if (StringUtils.isEmpty(fileName.toString())) {
                     fileName.append(bytesRequest.getFileName());
@@ -148,7 +151,7 @@ public class ClientSideStreamGrpcService extends ClientSideStreamServiceGrpc.Cli
                 log.info("clientStreamBytesByte onCompleted.");
                 byte[] data = buff[0];
                 File uploadFile = new File(uploadFilePath + System.currentTimeMillis() + fileName.toString());
-                // 把byte数组通过流转为文件存储到目标路径
+                // Convert the byte array into a file and store it in the target path
                 FileOutputStream fos = new FileOutputStream(uploadFile);
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
                 IoUtil.copy(byteArrayInputStream, fos);

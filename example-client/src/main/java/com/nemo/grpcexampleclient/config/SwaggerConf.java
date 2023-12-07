@@ -12,9 +12,9 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/12
+ * @date 2023/12/07
  */
 @EnableSwagger2
 @Configuration
@@ -33,9 +33,9 @@ public class SwaggerConf {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("example-api")
-                .description("grpc 4种请求测试api")
+                .description("grpc 4 types of request test api")
                 .termsOfServiceUrl("")
-                .contact(new Contact("Nemo", "https://cnblogs.com/nemowang1996/", "nemowang77@163.com"))
+                .contact(new Contact("Mirkamol", "https://github.com/MirkamolEgamberdiyev?tab=repositories", "mirkamol9187907@gmail.com"))
                 .version("1.0")
                 .build();
     }

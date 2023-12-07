@@ -11,18 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/22
+ * @date 2023/12/07
  */
 @Slf4j
 @GrpcService
 public class BidirectionalStreamGrpcService extends BidirectionalStreamServiceGrpc.BidirectionalStreamServiceImplBase {
 
     /**
-     * 双向流式传输 - 字符串
+     * Bidirectional Streaming - String
+     *
      * @param responseObserver
-     * @return
      */
     @Override
     public StreamObserver<StringRequest> bidirectionalStreamString(StreamObserver<StringResponse> responseObserver) {
@@ -32,9 +32,9 @@ public class BidirectionalStreamGrpcService extends BidirectionalStreamServiceGr
             @Override
             public void onNext(StringRequest request) {
                 log.info("BidirectionalStreamGrpcService bidirectionalStreamString onNext.");
-                // 分批次接收客户端传来的数据并处理
+                // Receive data from the client in batches and process it
                 String name = request.getValue();
-                String onNext = "欢迎" + name + "进入直播间." + System.lineSeparator();
+                String onNext = "welcome" + name + "Enter the live broadcast room." + System.lineSeparator();
                 log.info(onNext);
                 resultList.add(onNext);
             }
@@ -48,7 +48,7 @@ public class BidirectionalStreamGrpcService extends BidirectionalStreamServiceGr
             public void onCompleted() {
                 log.info("BidirectionalStreamGrpcService bidirectionalStreamString onCompleted.");
                 StringResponse.Builder builder = StringResponse.newBuilder();
-                // 分批次向客户端传送数据
+                // Send data to client in batches
                 for (String s : resultList) {
                     responseObserver.onNext(builder.setValue(s).build());
                 }

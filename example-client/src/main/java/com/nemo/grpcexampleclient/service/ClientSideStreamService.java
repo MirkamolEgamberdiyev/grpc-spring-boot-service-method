@@ -1,30 +1,24 @@
 package com.nemo.grpcexampleclient.service;
 
 import org.springframework.web.multipart.MultipartFile;
-
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/20
+ * @date 2023/12/07
  */
 public interface ClientSideStreamService {
     /**
-     * 客户端流式传输 - 字符串
-     * @return
+     * Client Streaming - String
      */
     String clientStreamString();
 
     /**
-     * 客户端流式传输 - bytes
-     * @param file
-     * @return
+     * client streaming - bytes
      */
     String clientStreamBytes(MultipartFile file);
 
     /**
-     * 客户端流式传输 - bytes 服务端通过byte数组接收
-     * @param file
-     * @return
+     * Client streaming - bytes server receives through byte array
      */
     String clientStreamBytesByte(MultipartFile file);
 }

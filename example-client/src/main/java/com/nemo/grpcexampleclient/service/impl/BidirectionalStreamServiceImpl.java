@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/22
+ * @date 2023/12/07
  */
 @Slf4j
 @Service
@@ -27,8 +27,7 @@ public class BidirectionalStreamServiceImpl implements BidirectionalStreamServic
     BidirectionalStreamServiceGrpc.BidirectionalStreamServiceStub serviceStub;
 
     /**
-     * 双向流式传输 - 字符串
-     * @return
+     * Bidirectional Streaming - String
      */
     @Override
     @SneakyThrows
@@ -41,7 +40,10 @@ public class BidirectionalStreamServiceImpl implements BidirectionalStreamServic
             public void onNext(StringResponse stringResponse) {
                 log.info("BidirectionalStreamServiceImpl bidirectionalStreamString onNext");
                 log.info(stringResponse.getValue());
-                // 分批次接收从服务端传来的数据
+
+                /**
+                 * Receive data from the server in batches
+                 */
                 resultBuilder.append(stringResponse.getValue());
             }
 
@@ -58,8 +60,11 @@ public class BidirectionalStreamServiceImpl implements BidirectionalStreamServic
         });
 
         StringRequest.Builder builder = StringRequest.newBuilder();
-        List<String> names = Arrays.asList("老番茄", "中国boy", "某幻君", "花少北", "LexBurner");
-        // 分批次向服务端传送数据
+        List<String> names = Arrays.asList("old man", "Chinese boy", "A certain fantasy king", "Hua Shaobei", "LexBurner");
+
+        /**
+         * Send data to the server in batches
+         */
         for (String name : names) {
             builder.setValue(name);
             observer.onNext(builder.build());

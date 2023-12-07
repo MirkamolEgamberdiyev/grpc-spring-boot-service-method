@@ -3,21 +3,19 @@ package com.nemo.grpcexampleclient.service;
 import java.io.File;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/17
+ * @date 2023/12/07
  */
 public interface ServerSideStreamService {
 
     /**
-     * 服务端流式传输 - 字符串
-     * @return
+     * Server-side streaming - string
      */
     String serverStreamString();
 
     /**
-     * 服务端流式传输 - bytes
-     * @return
+     * Server-side streaming - bytes
      */
     File serverStreamBytes();
 }

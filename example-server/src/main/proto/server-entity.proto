@@ -16,12 +16,12 @@ message StringResponse {
     string value = 1;
 }
 
-// 服务端流式传输响应参数
+// Server-side streaming response parameters
 message BytesResponse {
     bytes data = 1;
 }
 
-// 客户端流式传输请求参数
+// Client streaming request parameters
 message BytesRequest {
     bytes data = 1;
     string fileName = 2;

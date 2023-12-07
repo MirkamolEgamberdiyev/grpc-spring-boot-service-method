@@ -9,33 +9,33 @@ import "server-entity.proto";
 package server;
 
 service ExampleService {
-    // 普通方式传输
+    // Ordinary mode transmission
     rpc sayHelloWorld(StringRequest) returns (StringResponse);
 }
 
-// 服务端流式传输
+// Server-side streaming
 service ServerSideStreamService {
-    // 服务端流式传输 - 字符串
+    // Server-side streaming - string
     rpc serverStreamString(Empty) returns (stream StringResponse);
 
-    // 服务端流式传输 - bytes
+    // Server-side streaming - bytes
     rpc serverStreamBytes(Empty) returns (stream BytesResponse);
 }
 
-// 客户端流式传输
+// client streaming
 service ClientSideStreamService {
-    // 客户端流式传输 - 字符串
+    // Client Streaming - String
     rpc clientStreamString(stream StringRequest) returns (StringResponse);
 
-    // 客户端流式传输 - bytes 返回上传文件的保存路径
+    //Client streaming - bytes returns the save path of the uploaded file
     rpc clientStreamBytes(stream BytesRequest) returns (StringResponse);
 
-    // 客户端流式传输 - bytes 服务端通过byte数组接收
+    //Client streaming - bytes server receives through byte array
     rpc clientStreamBytesByte(stream BytesRequest) returns (StringResponse);
 }
 
-// 双向流式传输
+// Two-way streaming
 service BidirectionalStreamService {
-    // 双向流式传输 - 字符串
+    // Bidirectional Streaming - String
     rpc bidirectionalStreamString(stream StringRequest) returns (stream StringResponse);
 }

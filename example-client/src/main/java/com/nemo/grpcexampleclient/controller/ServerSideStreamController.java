@@ -22,13 +22,13 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/16
+ * @date 2023/12/07
  */
 @Slf4j
 @RestController
-@Api(value = "服务端流式传输", tags = "服务端流式传输")
+@Api(value = "Server-side streaming", tags = "Server-side streaming")
 @RequestMapping("ServerSideStream")
 public class ServerSideStreamController {
 
@@ -36,28 +36,28 @@ public class ServerSideStreamController {
     private ServerSideStreamService serverSideStreamService;
 
     @PostMapping("serverStreamString")
-    @ApiOperation(value = "服务端流式传输 - 字符串")
+    @ApiOperation(value = "Server-side streaming - string")
     public String serverStreamString() {
         return serverSideStreamService.serverStreamString();
     }
 
     @GetMapping("serverStreamBytes")
-    @ApiOperation(value = "服务端流式传输 - bytes")
+    @ApiOperation(value = "Server-side streaming - bytes")
     public void serverStreamBytes(HttpServletResponse response) {
         File file = serverSideStreamService.serverStreamBytes();
         String fileType = FileTypeUtil.getType(file);
 
-        // step1. 配置response
+        // step1. Configure response
         response.setHeader(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
         response.setContentType("application/octet-stream");
         try {
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename="
-                    + URLEncoder.encode("服务端流式传输下载文件." + fileType, "UTF-8"));
+                    + URLEncoder.encode("Server-side streaming download files." + fileType, "UTF-8"));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // step2. 实现文件下载
+        // step2. Implement file download
         byte[] buffer = new byte[1024];
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
              ServletOutputStream os = response.getOutputStream()) {
@@ -65,13 +65,13 @@ public class ServerSideStreamController {
             while ((length = bis.read(buffer)) != -1) {
                 os.write(buffer, 0, length);
             }
-            log.info("服务端流式传输接口 文件下载成功");
+            log.info("Server streaming interface file download successful");
         } catch (Exception e) {
-            log.info("服务端流式传输接口 文件下载失败");
+            log.info("Server streaming interface file download failed");
             e.printStackTrace();
         } finally {
             boolean del = FileUtil.del(file);
-            log.info("删除缓冲文件：" + del);
+            log.info("Delete buffer files：" + del);
         }
     }
 }

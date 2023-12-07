@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/16
+ * @date 2023/12/07
  */
 @RestController
-@Api(value = "客户端流式传输", tags = "客户端流式传输")
+@Api(value = "client streaming", tags = "client streaming")
 @RequestMapping("ClientSideStream")
 public class ClientSideStreamController {
 
@@ -23,19 +23,19 @@ public class ClientSideStreamController {
     ClientSideStreamService clientSideStreamService;
 
     @PostMapping("clientStreamString")
-    @ApiOperation(value = "客户端流式传输 - 字符串")
+    @ApiOperation(value = "client streaming - string")
     public String clientStreamString() {
         return clientSideStreamService.clientStreamString();
     }
 
     @PostMapping("clientStreamBytes")
-    @ApiOperation(value = "客户端流式传输 - bytes")
+    @ApiOperation(value = "client streaming - bytes")
     public String clientStreamBytes(MultipartFile file) {
         return clientSideStreamService.clientStreamBytes(file);
     }
 
     @PostMapping("clientStreamBytesByte")
-    @ApiOperation(value = "客户端流式传输 - bytes 服务端通过byte数组接收")
+    @ApiOperation(value = "client streaming - bytes The server receives through byte array")
     public String clientStreamBytesByte(MultipartFile file) {
         return clientSideStreamService.clientStreamBytesByte(file);
     }

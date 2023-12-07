@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/11
+ * @date 2023/12/07
  */
 @Slf4j
 @GrpcService

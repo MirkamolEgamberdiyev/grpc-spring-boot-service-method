@@ -17,9 +17,9 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/17
+ * @date 2023/12/07
  */
 @Slf4j
 @GrpcService
@@ -33,34 +33,34 @@ public class ServerSideStreamGrpcService extends ServerSideStreamServiceGrpc.Ser
     }
 
     /**
-     * 服务端流式传输 - 字符串
+     * Server-side streaming - string
      * @param request
      * @param responseObserver
      */
     @Override
     public void serverStreamString(Empty request, StreamObserver<StringResponse> responseObserver) {
         StringResponse.Builder builder = StringResponse.newBuilder();
-        // 通过流分7次向客户端发送数据
+        // Send data to client via stream 7 times
         for (int i = 0; i < 7; i++) {
-            builder.setValue("服务端流式传输 - 字符串 第" + i + "次发送数据" + System.lineSeparator());
+            builder.setValue("Server-side streaming - String No." + i + "Send data" + System.lineSeparator());
             responseObserver.onNext(builder.build());
         }
         responseObserver.onCompleted();
     }
 
     /**
-     * 服务端流式传输 - bytes
+     * Server-side streaming - bytes
      * @param request
      * @param responseObserver
      */
     @Override
     public void serverStreamBytes(Empty request, StreamObserver<BytesResponse> responseObserver) {
-        // 读取resources目录下的文件路径
+        // Read the file path in the resources directory
         ClassPathResource classPathResource = new ClassPathResource(filePath + "knight.png");
 
         try (FileInputStream fis = new FileInputStream(classPathResource.getFile());
              BufferedInputStream bis = new BufferedInputStream(fis)) {
-            // 512K 缓冲区大小，即每次向客户端发送的数据大小
+            // 512K Buffer size, that is, the size of data sent to the client each time
             byte[] buffer = new byte[512 * 1024];
             while (bis.read(buffer) > 0) {
                 responseObserver.onNext(BytesResponse.newBuilder().setData(ByteString.copyFrom(buffer)).build());
@@ -68,7 +68,7 @@ public class ServerSideStreamGrpcService extends ServerSideStreamServiceGrpc.Ser
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("文件大小：" + FileUtil.readableFileSize(classPathResource.getFile()));
+        log.info("File size：" + FileUtil.readableFileSize(classPathResource.getFile()));
         responseObserver.onCompleted();
     }
 }

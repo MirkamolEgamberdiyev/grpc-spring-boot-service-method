@@ -104,7 +104,6 @@
             </dependency>
 
 
-            <!--gRpc springboot 启动-->
             <dependency>
                 <groupId>net.devh</groupId>
                 <artifactId>grpc-client-spring-boot-starter</artifactId>

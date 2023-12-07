@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/11
+ * @date 2023/12/07
  */
 @RestController
-@Api(value = "简单模式传输", tags = "简单模式传输")
+@Api(value = "Simple mode transfer", tags = "Simple mode transfer")
 @RequestMapping("Test")
 public class ExampleController {
 
@@ -24,7 +24,7 @@ public class ExampleController {
     private ExampleServiceGrpc.ExampleServiceBlockingStub exampleServiceBlockingStub;
 
     @PostMapping("sayHelloWorld")
-    @ApiOperation(value = "普通方式传输")
+    @ApiOperation(value = "Ordinary mode transmission")
     public String sayHelloWorld() {
         StringRequest request = StringRequest.newBuilder().setValue("Grpc").build();
         StringResponse response = exampleServiceBlockingStub.sayHelloWorld(request);

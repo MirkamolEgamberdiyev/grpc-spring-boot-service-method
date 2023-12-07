@@ -1,7 +1,5 @@
 package com.nemo.grpcexampleclient.service.impl;
 
-import cn.hutool.json.JSON;
-import cn.hutool.json.JSONUtil;
 import com.nemo.grpcexampleclient.service.ServerSideStreamService;
 import com.nemo.grpcexampleserver.BytesResponse;
 import com.nemo.grpcexampleserver.Empty;
@@ -12,16 +10,17 @@ import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.io.*;
-import java.util.HashMap;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.UUID;
 
 /**
- * @author Nemo
+ * @author Mirkamol
  * @version 1.0
- * @date 2020/4/17
+ * @date 2023/12/07
  */
 @Slf4j
 @Service
@@ -31,12 +30,13 @@ public class ServiceSideStreamServiceImpl implements ServerSideStreamService {
     private ServerSideStreamServiceGrpc.ServerSideStreamServiceBlockingStub blockingStub;
 
     /**
-     * 服务端流式传输 - 字符串
-     * @return
+     * Server-side streaming - string
      */
     @Override
     public String serverStreamString() {
-        // 通过服务端流式传输接口获取到的数据是继承了Iterator接口的类型
+        /**
+         * The data obtained through the server-side streaming interface is a type that inherits the Iterator interface.
+         */
         Iterator<StringResponse> responseIterator = blockingStub.serverStreamString(Empty.newBuilder().build());
         StringBuilder resultBuilder = new StringBuilder();
         while (responseIterator.hasNext()) {
@@ -46,18 +46,22 @@ public class ServiceSideStreamServiceImpl implements ServerSideStreamService {
     }
 
     /**
-     * 服务端流式传输 - bytes
-     * @return
+     * Server-side streaming - bytes
      */
     @Override
     public File serverStreamBytes() {
-        // step1. 接收服务端返回的数据 通过服务端流式传输接口获取到的数据是继承了Iterator接口的类型
+
+        /**
+         * step1. Receive the data returned by the server. The data obtained through the server streaming interface is a type that inherits the Iterator interface.
+         */
         Iterator<BytesResponse> responseIterator = blockingStub.serverStreamBytes(Empty.newBuilder().build());
         String bufferFilePath = "";
         BufferedOutputStream bufferedOutputStream = null;
         while (responseIterator.hasNext()) {
             BytesResponse next = responseIterator.next();
-            // step2. 把分段传输的数据写入到 bufferOutputStream 流中
+            /**
+             * step2. Write the segmented data into the bufferOutputStream stream
+             */
             try {
                 if (StringUtils.isEmpty(bufferFilePath)) {
                     bufferFilePath = "./" + UUID.randomUUID().toString() + "serverStreamBytes";
@@ -71,7 +75,9 @@ public class ServiceSideStreamServiceImpl implements ServerSideStreamService {
         }
         try {
             if (bufferedOutputStream != null) {
-                // step3. 接收到全部数据后，把数据flush到文件(bufferFilePath)中
+                /**
+                 * step3. After receiving all the data, flush the data to the file (bufferFilePath)
+                 */
                 bufferedOutputStream.flush();
                 bufferedOutputStream.close();
             }
