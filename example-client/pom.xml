@@ -104,7 +104,6 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <!-- 使用maven插件复制server的proto文件 -->
                         <phase>validate</phase>
                         <goals>
                             <goal>copy-resources</goal>
