@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.nemo.grpcexampleserver";
+option java_outer_classname = "ServerProto";
+
+import "server-entity.proto";
+
+package server;
+
+service ExampleService {
+    // Ordinary mode transmission
+    rpc sayHelloWorld(StringRequest) returns (StringResponse);
+}
+
+// Server-side streaming
+service ServerSideStreamService {
+    // Server-side streaming - string
+    rpc serverStreamString(Empty) returns (stream StringResponse);
+
+    // Server-side streaming - bytes
+    rpc serverStreamBytes(Empty) returns (stream BytesResponse);
+}
+
+// client streaming
+service ClientSideStreamService {
+    // Client Streaming - String
+    rpc clientStreamString(stream StringRequest) returns (StringResponse);
+
+    //Client streaming - bytes returns the save path of the uploaded file
+    rpc clientStreamBytes(stream BytesRequest) returns (StringResponse);
+
+    //Client streaming - bytes server receives through byte array
+    rpc clientStreamBytesByte(stream BytesRequest) returns (StringResponse);
+}
+
+// Two-way streaming
+service BidirectionalStreamService {
+    // Bidirectional Streaming - String
+    rpc bidirectionalStreamString(stream StringRequest) returns (stream StringResponse);
+}

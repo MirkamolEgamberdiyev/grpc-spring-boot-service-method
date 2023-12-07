@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.nemo.grpcexampleserver";
+option java_outer_classname = "ServerEntityProto";
+
+package server;
+
+message Empty {}
+
+message StringRequest {
+    string value = 1;
+}
+
+message StringResponse {
+    string value = 1;
+}
+
+// Server-side streaming response parameters
+message BytesResponse {
+    bytes data = 1;
+}
+
+// Client streaming request parameters
+message BytesRequest {
+    bytes data = 1;
+    string fileName = 2;
+}
